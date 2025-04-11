@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor Dashboard - Time2Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #e0f7fa, #f8f9fa);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .dashboard-container {
+            max-width: 850px;
+            margin: 60px auto;
+            padding: 40px 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: bold;
+            color: #343a40;
+        }
+        .btn-group-vertical .btn {
+            margin-bottom: 20px;
+            padding: 12px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        .btn-group-vertical .btn:hover {
+            transform: scale(1.02);
+        }
+        .status-toggle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+        }
+        .form-switch .form-check-input {
+            height: 24px;
+            width: 50px;
+            cursor: pointer;
+        }
+        .status-label {
+            margin-right: 10px;
+            font-weight: 500;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <form id="statusForm" action="/vendor/update-status" method="POST" class="status-toggle">
+            <span class="status-label">Status:</span>
+            <div class="form-check form-switch">
+                <!-- Hidden field to carry the actual status -->
+                <input type="hidden" name="status" id="statusHidden" value="Online">
+                <!-- The checkbox for toggle -->
+                <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch" checked onchange="submitStatus(event)">
+
+                
+            </div>
+        </form>
+        <script>
+            function submitStatus(event) {
+                event.preventDefault();
+        
+                const switchInput = document.getElementById('statusSwitch');
+                const hiddenInput = document.getElementById('statusHidden');
+        
+                hiddenInput.value = switchInput.checked ? 'Online' : 'Offline';
+        
+                // Send status using fetch
+                fetch('/vendor/update-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `status=${hiddenInput.value}`
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Status updated to:", hiddenInput.value);
+                    } else {
+                        alert("Failed to update status.");
+                        // Roll back switch if update fails
+                        switchInput.checked = !switchInput.checked;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    switchInput.checked = !switchInput.checked;
+                });
+            }
+        </script>
+        
+        
+        
+
+        <h2>Welcome, {{ vendor_username }}</h2>
+        <div class="btn-group-vertical w-100">
+            <a href="/vendor/add-product" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add Product</a>
+            <a href="/vendor/products" class="btn btn-primary"><i class="bi bi-pencil-square"></i> Edit Product</a>
+            <a href="/vendor/change-status" class="btn btn-warning"><i class="bi bi-arrow-repeat"></i> Change Product Status</a>
+            <a href="/vendor/orders" class="btn btn-info text-white"><i class="bi bi-box-seam"></i> View Order Details</a>
+        </div>
+    </div>
+
+</body>
+</html>

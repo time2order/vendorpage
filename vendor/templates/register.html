@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor Signup</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+        .form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        h2 {
+            text-align: center;
+        }
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-box">
+        <form method="POST" id="vendorForm">
+            <h2>Vendor Registration</h2>
+            <img src="{{ url_for('static', filename='logoatlogin.jpg') }}" alt="Company Logo" class="logo" style="display: block; margin: 0 auto; width: 100px;">
+
+            {% if success %}
+                <p class="success">{{ success }}</p>
+            {% endif %}
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <!-- Step 1 -->
+            <div class="form-step step-1 active">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="repassword" placeholder="Re-enter Password" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="mobile" placeholder="Mobile Number" required>
+                <button type="button" id="nextBtn">Next</button>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="form-step step-2">
+                <input type="text" name="shop_name" placeholder="Shop Name" required>
+                <input type="text" name="shop_owner_name" placeholder="Shop Owner Name" required>
+                <input type="url" name="map_link" placeholder="Google Map Link" required>
+                <input type="text" name="shop_address" placeholder="Shop Address" required>
+                <input type="text" name="pincode" placeholder="Pincode" pattern="\d{6}" title="Enter a 6-digit pincode" required>
+                
+                <select name="category" required>
+                    <option value="">-- Select Category --</option>
+                    <option value="grocery">Grocery</option>
+                    <option value="meat">Meat</option>
+                    <option value="hostel">Hostel</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="RO Shop">Ro Shop</option>
+                    <option value="Electrical and Pumbing">Electrical and Pumbing</option>
+                </select>
+                
+                <button type="submit">Submit</button>
+            </div>
+            
+        </form>
+    </div>
+
+    <script>
+        $('#nextBtn').on('click', function() {
+            const pwd = $('input[name="password"]').val();
+            const repwd = $('input[name="repassword"]').val();
+
+            if (pwd !== repwd) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            $('.step-1').removeClass('active');
+            $('.step-2').addClass('active');
+        });
+    </script>
+</body>
+</html>
